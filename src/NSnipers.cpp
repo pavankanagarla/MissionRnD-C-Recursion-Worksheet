@@ -41,8 +41,40 @@ Read :How to access elements in 2D array when its first element address is passe
 
 P.S: The Above Problem is just a modified version of a popular BackTracking problem .
 */
-
+#include "math.h"
 #include "stdafx.h"
-int solve_nsnipers(int *battlefield, int n){
+int pathcheck( int i ,int j, int *battlefield, int n){
+	int rows;
+	int k;
+	for (rows = 0; rows < i; rows++){
+		for (k = 0; k < n; k++){
+			if (battlefield[(rows * n) + k] == 1){
+				if (k == j || abs(i - rows) == abs(k - j))
+					return 0;
+				break;
+			}
+		}
+	}
+	return 1;
+}
+
+int placeQueen(int *battlefield, int n, int rows){
+	int j;
+	if (rows == n)
+		return 1;
+	for (j = 0; j < n; j++){
+		if (pathcheck(rows, j, battlefield, n) == 1){
+			battlefield[(rows*n) + j] = 1;
+			if (placeQueen(battlefield, n, rows  + 1) == 1)
+				return 1;
+			battlefield[(rows*n) + j] = 0;
+		}
+	}
 	return 0;
+}
+
+int solve_nsnipers(int *battlefield, int n){
+	if (battlefield == NULL || n <= 0)
+		return 0;
+	return placeQueen(battlefield, n, 0);
 }
